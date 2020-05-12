@@ -1,4 +1,4 @@
-import setUpAttacks from './app';
+import setUpAttacks from './setUpAttacks';
 
 const creteCharBtn = document.querySelector('.create_characters_button');
 const attackBtn = document.querySelector('.attack');

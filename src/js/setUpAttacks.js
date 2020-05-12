@@ -3,17 +3,19 @@
  * @param shield - включена общая защита или нет
  */
 export default function setUpAttacks(items) {
-  const result = [];
-
-  items.forEach((item) => {
+  function checkHealth(whom, damage) {
+    const char = whom;
+    char.health -= damage;
+    if (char.health < 0 || Number.isNaN(char.health)) {
+      char.health = 0;
+    }
+  }
+  return items.map((item) => {
     const character = item;
     const hitFunc = function hit(damage, shieldOnOf) {
       const shield = shieldOnOf;
       if (!shield) {
-        character.health -= damage;
-        if (character.health <= 0) {
-          character.health = 0;
-        }
+        checkHealth(character, damage);
       } else {
         const charactersAlive = items.filter((char) => char.health > 0);
         const damageRemainder = damage % charactersAlive.length;
@@ -22,29 +24,17 @@ export default function setUpAttacks(items) {
           const shieldedCharacter = elem;
           if (damage % charactersAlive.length === 0) {
             const equalDamage = damage / charactersAlive.length;
-
-            shieldedCharacter.health -= equalDamage;
-            if (shieldedCharacter.health < 0) {
-              shieldedCharacter.health = 0;
-            }
+            checkHealth(shieldedCharacter, equalDamage);
           } else {
             const equalDamage = (damage - damageRemainder) / charactersAlive.length;
-            shieldedCharacter.health -= equalDamage;
-            if (shieldedCharacter.health <= 0) {
-              shieldedCharacter.health = 0;
-            }
+            checkHealth(shieldedCharacter, equalDamage);
           }
         });
-        character.health -= damageRemainder;
-        if (character.health < 0 || Number.isNaN(character.health)) {
-          character.health = 0;
-        }
+        checkHealth(character, damageRemainder);
       }
     };
-    result.push(hitFunc);
+    return hitFunc;
   });
-
-  return result;
 }
 
 const characters = [

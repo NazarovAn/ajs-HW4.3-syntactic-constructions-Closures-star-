@@ -1,4 +1,4 @@
-import setUpAttacks from '../app';
+import setUpAttacks from '../setUpAttacks';
 
 let characters = [
   { name: 'маг', health: 100 },
